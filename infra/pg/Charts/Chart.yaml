@@ -1,0 +1,6 @@
+---
+apiVersion: v2
+name: lab-database
+description: Home lab cloud native pg
+type: application
+version: 0.1.0

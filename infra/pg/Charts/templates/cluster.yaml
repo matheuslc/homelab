@@ -1,0 +1,26 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.dbName }}
+spec:
+  description: "Homelab Cloud Native PG"
+  imageName: {{ .Values.image.name}}:{{ .Values.image.tag }}
+  instances: {{ .Values.instancesCount }}
+  bootstrap:
+    initdb: #  Setup the database.
+      database: {{ .Values.database.name }}
+      owner: {{ .Values.database.owner }}
+      secret:
+        name: {{ .Values.dbName }}-owner-user
+  storage:
+    size: "{{ .Values.storage.pgData.sizeGb }}Gi"
+  walStorage:
+    size: "{{ .Values.storage.wal.sizeGb }}Gi"
+
+  resources:
+    {{- toYaml .Values.resources | nindent 4 }}
+
+  postgresql:
+    parameters:
+      {{- toYaml .Values.pgParameters | nindent  6 }}
