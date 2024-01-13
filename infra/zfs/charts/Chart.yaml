@@ -1,6 +1,6 @@
 ---
 apiVersion: v2
-name: lab-database
+name: zfs-driver
 description: Home lab cloud native pg
 type: application
-version: 0.2.0
+version: 0.1.0

@@ -4,16 +4,26 @@ database:
   name: main 
   owner: admin 
   ownerPassword: "pwd"
-instances: 2
+instances: 3
 image:
   name: ghcr.io/cloudnative-pg/postgresql
   tag: 16.1
 storage:
+  size: 30
+  pvcTemplate:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 25Gi
+    storageClassName: standard
+    volumeMode: Filesystem
   pgData:
-    sizeGb: 40
+    sizeGb: 20Gi
   wal:
-    sizeGb: 10
+    sizeGb: 5Gi
+walStorage:
+    size: 5Gi
 # -- Postgres parameters, see <https://cloudnative-pg.io/documentation/1.21/postgresql_conf/> and <https://www.postgresql.org/docs/current/runtime-config.html>.
 pgParameters: {}
-# -- Resources to allocate to the database pods.
 resources: {}

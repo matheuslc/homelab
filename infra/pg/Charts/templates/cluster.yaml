@@ -14,9 +14,17 @@ spec:
       secret:
         name: {{ .Values.dbName }}-owner-user
   storage:
-    size: "{{ .Values.storage.pgData.sizeGb }}Gi"
-  walStorage:
-    size: "{{ .Values.storage.wal.sizeGb }}Gi"
+    size: "{{ .Values.storage.pgData.sizeGb }}"
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 25Gi
+      storageClassName: openebs-zfspv
+      volumeMode: Filesystem
+    walStorage:
+      size: 5Gi
 
   resources:
     {{- toYaml .Values.resources | nindent 4 }}
