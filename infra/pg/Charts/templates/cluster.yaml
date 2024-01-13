@@ -23,8 +23,16 @@ spec:
           storage: 25Gi
       storageClassName: openebs-zfspv
       volumeMode: Filesystem
-    walStorage:
-      size: 5Gi
+  walStorage:
+    size: 5Gi
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: openebs-zfspv
+      volumeMode: Filesystem
 
   resources:
     {{- toYaml .Values.resources | nindent 4 }}
