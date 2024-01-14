@@ -2,12 +2,12 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: openebs-zfspv
+  name: {{ .Release.Name }}-storageclass
 parameters:
   recordsize: "128k"
   compression: "off"
   dedup: "off"
   fstype: "zfs"
-  poolname: "lab-pool/pgdata"
+  poolname: {{ .Values.poolName  }}
 provisioner: zfs.csi.openebs.io
 allowVolumeExpansion: true

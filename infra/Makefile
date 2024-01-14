@@ -56,7 +56,7 @@ cnpg-uninstall:
 
 db-install:
 	@echo "Installing the Postgres Database: $(DBReleaseName)"
-	@microk8s helm install $(DBReleaseName) ./pg/Charts --atomic
+	@microk8s helm install $(DBReleaseName) ./pg/charts --atomic
 
 db-uninstall:
 	@echo "Removing the Postgres Database: $(DBReleaseName)"

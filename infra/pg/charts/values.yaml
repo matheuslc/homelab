@@ -9,21 +9,26 @@ image:
   name: ghcr.io/cloudnative-pg/postgresql
   tag: 16.1
 storage:
-  size: 30
+  size: 25Gi
   pvcTemplate:
     accessModes:
       - ReadWriteOnce
     resources:
       requests:
         storage: 25Gi
-    storageClassName: standard
+    storageClassName: zfs-driver-storageclass
     volumeMode: Filesystem
-  pgData:
-    sizeGb: 20Gi
-  wal:
-    sizeGb: 5Gi
 walStorage:
-    size: 5Gi
+  size: 5Gi
+  pvcTemplate:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+    storageClassName: zfs-driver-storageclass
+    volumeMode: Filesystem
+
 # -- Postgres parameters, see <https://cloudnative-pg.io/documentation/1.21/postgresql_conf/> and <https://www.postgresql.org/docs/current/runtime-config.html>.
 pgParameters: {}
 resources: {}

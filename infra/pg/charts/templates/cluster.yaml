@@ -2,11 +2,11 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: {{ .Values.dbName }}
+  name: {{ .Release.Name }}
 spec:
-  description: "Homelab Cloud Native PG"
+  description: {{ .Release.Description }}
   imageName: {{ .Values.image.name}}:{{ .Values.image.tag }}
-  instances: {{ .Values.instancesCount }}
+  instances: {{ .Values.instances }}
   bootstrap:
     initdb: #  Setup the database.
       database: {{ .Values.database.name }}
@@ -14,25 +14,9 @@ spec:
       secret:
         name: {{ .Values.dbName }}-owner-user
   storage:
-    size: "{{ .Values.storage.pgData.sizeGb }}"
-    pvcTemplate:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 25Gi
-      storageClassName: openebs-zfspv
-      volumeMode: Filesystem
+    {{- toYaml .Values.storage | nindent 4 }}
   walStorage:
-    size: 5Gi
-    pvcTemplate:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-      storageClassName: openebs-zfspv
-      volumeMode: Filesystem
+    {{- toYaml .Values.walStorage | nindent 4 }}
 
   resources:
     {{- toYaml .Values.resources | nindent 4 }}
