@@ -1,0 +1,7 @@
+---
+tenant:
+  pools:
+    - servers: 1
+      volumesPerServer: 1
+      size: 5Gi
+      storageClassName: zfs-driver-storageclass

@@ -1,9 +1,10 @@
 ZFSReleaseName = zfs-csi
 ZFSStorageClassReleaseNAme = zfs-driver
-
 DBReleaseName = lab-db
+StorageReleaseName = lab-storage
+MinioOperatorReleaseName = minio-operator
 
-.PHONY: deps zfscsi zfscsi-uninstall zfscsi-driver zfs-driver-uninstall cnpg cnpg-uninstall start reset
+.PHONY: deps zfscsi zfscsi-uninstall zfscsi-driver zfs-driver-uninstall cnpg cnpg-uninstall storage-install storage-uninstall start reset
 
 start:
 	$(MAKE) zfscsi
@@ -12,8 +13,13 @@ start:
 	@echo "Waiting 30 seconds so the CNPG Operator can start"
 	sleep 30s
 	$(MAKE) db-install
+	$(MAKE) minio-install
+	$(MAKE) storage-install
 
 uninstall-all:
+	$(MAKE) storage-uninstall
+	$(MAKE) minio-uninstall
+	$(MAKE) db-uninstall
 	$(MAKE) cnpg-uninstall
 	$(MAKE) zfs-driver-uninstall
 	$(MAKE) zfscsi-uninstall
@@ -61,6 +67,23 @@ db-install:
 db-uninstall:
 	@echo "Removing the Postgres Database: $(DBReleaseName)"
 	@microk8s helm uninstall $(DBReleaseName)
+
+minio-install:
+	@echo "Installing the Object Storage (minio): $(MinioOperatorReleaseName)"
+	@microk8s helm repo add minio-operator https://operator.min.io
+	@microk8s helm upgrade --install $(MinioOperatorReleaseName) minio-operator/operator -f ./storage/charts/values.yaml --namespace minio-operator --create-namespace --atomic
+		
+minio-uninstall:
+	@echo "Removing the Object Storage (minio): $(MinioOperatorReleaseName)"
+	@microk8s helm uninstall $(MinioOperatorReleaseName) -n minio-operator
+
+storage-install:
+	@echo "Installing a Minio Tenant"
+	@microk8s helm install --namespace storage --create-namespace $(StorageReleaseName) minio-operator/tenant --atomic -f ./storage/charts/tenant.yaml
+
+storage-uninstall:
+	@echo "Removing the Minio Tenant"
+	@microk8s helm uninstall $(StorageReleaseName) -n storage
 
 reset:
 	@echo "Reseting the cluster"
