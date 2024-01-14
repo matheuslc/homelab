@@ -63,5 +63,5 @@ db-uninstall:
 	@microk8s helm uninstall $(DBReleaseName)
 
 reset:
-	@echo "Resetting the cluster"
+	@echo "Reseting the cluster"
 	@microk8s reset
