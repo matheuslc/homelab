@@ -1,12 +1,26 @@
 ZFSReleaseName = zfs-csi
 ZFSStorageClassReleaseNAme = zfs-driver
 
-.PHONY: deps zfscsi zfscsi-uninstall zfscsi-driver zfs-driver-uninstall cnpg cnpg-uninstall
+DBReleaseName = lab-db
+
+.PHONY: deps zfscsi zfscsi-uninstall zfscsi-driver zfs-driver-uninstall cnpg cnpg-uninstall start reset
+
+start:
+	$(MAKE) zfscsi
+	$(MAKE) zfs-driver
+	$(MAKE) cnpg
+	@echo "Waiting 30 seconds so the CNPG Operator can start"
+	sleep 30s
+	$(MAKE) db-install
+
+uninstall-all:
+	$(MAKE) cnpg-uninstall
+	$(MAKE) zfs-driver-uninstall
+	$(MAKE) zfscsi-uninstall
 
 deps:
 	@echo "Installing microk8s addons"
 	@microk8s enable dns
-
 
 zfscsi:
 	@echo "Adding the helm repo for the openebs local zfs driver"
@@ -26,7 +40,7 @@ zfs-driver:
 
 zfs-driver-uninstall:
 	@echo "Removing the ZFS Driver StorageClass: $(ZFSStorageClassReleaseNAme)"
-	@microk8s helm uninstall $(ZFSStorageClassReleaseNAme) ./zfs/charts
+	@microk8s helm uninstall $(ZFSStorageClassReleaseNAme)
 
 cnpg:
 	@echo "Installing the Cloud Native Postgres Operator"
@@ -41,5 +55,13 @@ cnpg-uninstall:
 	@microk8s helm uninstall cnpg --namespace cnpg-system
 
 db-install:
-	@echo "Installing the Postgres Database"
-	@microk8s helm install lab-db ./pg/Charts --atomic
+	@echo "Installing the Postgres Database: $(DBReleaseName)"
+	@microk8s helm install $(DBReleaseName) ./pg/Charts --atomic
+
+db-uninstall:
+	@echo "Removing the Postgres Database: $(DBReleaseName)"
+	@microk8s helm uninstall $(DBReleaseName)
+
+reset:
+	@echo "Resetting the cluster"
+	@microk8s reset
