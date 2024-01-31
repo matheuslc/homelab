@@ -104,7 +104,7 @@ grafana-install:
 	@echo "Installing Grafana"
 	@microk8s helm repo add grafana https://grafana.github.io/helm-charts
 	@microk8s helm repo update
-	@microk8s helm upgrade --install grafana grafana/grafana --set persistence.enabled=true
+	@microk8s helm upgrade --install grafana grafana/grafana --set persistence.enabled=true,persistence.existingClaim=grafana-pvc
 
 grafana-uninstall:
 	@echo "Removing Grafana"
