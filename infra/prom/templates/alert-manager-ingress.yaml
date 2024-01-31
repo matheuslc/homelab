@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alert-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging-cluste-issuer"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - alert.zeah.software
+    secretName: alert-service-tls
+  rules:
+  - host: alert.zeah.software
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-alertmanager
+            port:
+              number: 9093

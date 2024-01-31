@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging-cluste-issuer"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - prometheus.zeah.software
+    secretName: prometheus-service-tls
+  rules:
+  - host: prometheus.zeah.software
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-server
+            port:
+              number: 80
+            

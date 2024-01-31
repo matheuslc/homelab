@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging-cluste-issuer"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - grafana.zeah.software
+    secretName: grafana-service-tls
+  rules:
+  - host: grafana.zeah.software
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 80

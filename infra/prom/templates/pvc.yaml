@@ -1,0 +1,38 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prom-pvc
+spec:
+  storageClassName: zfs-driver-storageclass
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: grafana-pvc
+spec:
+  storageClassName: zfs-driver-storageclass
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: alert-pvc
+spec:
+  storageClassName: zfs-driver-storageclass
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

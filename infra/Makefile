@@ -7,6 +7,7 @@ PrometheusReleaseName = prom-dev
 
 .PHONY: deps zfscsi zfscsi-uninstall zfscsi-driver zfs-driver-uninstall cnpg cnpg-uninstall storage-install storage-uninstall start reset
 
+
 start:
 	$(MAKE) zfscsi
 	$(MAKE) zfs-driver
@@ -16,10 +17,9 @@ start:
 	$(MAKE) db-install
 	$(MAKE) minio-install
 	$(MAKE) storage-install
-	$(MAKE) prom-install
+
 
 uninstall-all:
-	$(MAKE) prom-uninstall
 	$(MAKE) storage-uninstall
 	$(MAKE) minio-uninstall
 	$(MAKE) db-uninstall
@@ -91,7 +91,7 @@ storage-uninstall:
 prom-install:
 	@echo "Installing Prometheus"
 	# @microk8s helm repo add prometheus-community https://prometheus-community.github.io/helm-chart
-	@microk8s helm upgrade --install prometheus prometheus-community/prometheus
+	@microk8s helm upgrade --install prometheus prometheus-community/prometheus --set alertmanager.persistentVolume.existingClaim=alert-pvc,server.persistentVolume.existingClaim=prom-pvc,grafana.persistentVolume.existingClaim=grafana-pvc
 
 prom-uninstall:
 	@echo "Removing Prometheus"
@@ -109,6 +109,20 @@ grafana-install:
 grafana-uninstall:
 	@echo "Removing Grafana"
 	@microk8s helm uninstall grafana
+
+multipass-install:
+	@echo "Installing Multipass"
+	@sudo snap install multipass
+	@multipass launch -m 2Gb -n microk8s-vm1
+	@multipass launch -m 2Gb -n microk8s-vm2
+	@multipass launch -m 2Gb -n microk8s-worker-1
+
+multipass-uninstall:
+	@echo "Removing Multipass"
+	@multipass delete microk8s-vm1
+	@multipass delete microk8s-vm2
+	@multipass delete microk8s-worker-1
+
 
 reset:
 	@echo "Reseting the cluster"
