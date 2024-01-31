@@ -1,0 +1,14 @@
+# ---
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: test-cert
+#   namespace: default
+# spec:
+#   secretName: test-cert-tls
+#   issuerRef:
+#     name: letsencrypt-staging-cluste-issuer
+#     kind: ClusterIssuer
+#   commonName: test.zeah.software
+#   dnsNames:
+#   - test.zeah.software
